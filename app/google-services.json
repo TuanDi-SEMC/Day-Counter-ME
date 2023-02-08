@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "219010913007",
+    "project_id": "day-count-me",
+    "storage_bucket": "day-count-me.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219010913007:android:5267ae506c45d97775011a",
+        "android_client_info": {
+          "package_name": "com.diagonalley.daycounterme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219010913007-re3rd26i5a2gm5nt0iqopt4ad69jc2ah.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diagonalley.daycounterme",
+            "certificate_hash": "defc403640cb3691e74f13988cb9ca284d4a7373"
+          }
+        },
+        {
+          "client_id": "219010913007-satbiho94q93u2ccbj2d224b0s7j1i8m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBwXAPcgrUjTVYFrAfFMyJJCfp3lmnZ8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "219010913007-satbiho94q93u2ccbj2d224b0s7j1i8m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

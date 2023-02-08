@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Day Counter ME</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="auto">Follow OS setting</string>
+    <string name="required_permission">Required Permission</string>
+    <string name="take_me_to_settings">Go to app settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="app_update_available">App update available</string>
+    <string name="update_now">Update now</string>
+    <string name="fore_update">You are on an older app version. You can use the app only if you update it.</string>
+    <string name="action_skip">Skip</string>
+    <string name="suggest_update">A new version is found on Play store, please update for better usage.</string>
+
 </resources>
