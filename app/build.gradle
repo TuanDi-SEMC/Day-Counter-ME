@@ -5,6 +5,7 @@ plugins {
     id 'com.google.dagger.hilt.android'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -68,6 +69,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -76,6 +78,7 @@ android {
     }
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
     kapt {
         javacOptions {
@@ -95,6 +98,7 @@ dependencies {
 
     // glide
     implementation "com.github.bumptech.glide:glide:4.13.2"
+    implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha05'
     kapt "com.github.bumptech.glide:compiler:4.13.2"
 
     // hilt
@@ -120,6 +124,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.8.0')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-config-ktx'
+    implementation "com.google.firebase:firebase-firestore-ktx"
 
     // material dialogs
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
@@ -132,6 +137,16 @@ dependencies {
 
     // admob
     implementation 'com.google.android.gms:play-services-ads:21.5.0'
+
+    // ktx
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
+
+    //ZXing
+    implementation "com.google.zxing:core:3.4.1"
+
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.2'
+    //Calendar view
+    implementation 'com.kizitonwose.calendar:view:2.2.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

@@ -30,4 +30,16 @@ object Constant {
     const val XIAOMI = "xiaomi"
     const val HUAWEI = "huawei"
 }
+
 const val ADMOD_TAG = "admob"
+
+const val WEDDING = 0
+const val BIRTHDAY = 1
+
+enum class Event {
+    WEEDING, BIRTHDAY, DAY,
+}
+
+enum class CountType {
+    COUNT, COUNT_DOWN
+}

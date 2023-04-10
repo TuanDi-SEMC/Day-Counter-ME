@@ -1,5 +1,6 @@
 package com.diagonalley.daycounterme.di
 
+import android.app.AlarmManager
 import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,6 +9,9 @@ import android.net.ConnectivityManager
 import com.diagonalley.daycounterme.global.AppConfig
 import com.diagonalley.daycounterme.global.Constant.SHARED_PREPS
 import com.diagonalley.daycounterme.global.SharedPreps
+import com.diagonalley.daycounterme.manager.AuthManager
+import com.diagonalley.daycounterme.manager.MyAlarmManager
+import com.diagonalley.daycounterme.manager.MyBiometricManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -61,4 +65,32 @@ object AppModule {
     fun provideAppConfig(sharedPreps: SharedPreps, resources: Resources): AppConfig {
         return AppConfig(sharedPreps, resources)
     }
+
+    @Provides
+    @Singleton
+    fun provideAuthManager(sharedPreps: SharedPreps, appConfig: AppConfig): AuthManager {
+        return AuthManager(sharedPreps, appConfig)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMyBiometricManager(@ApplicationContext context: Context): MyBiometricManager {
+        return MyBiometricManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlarmManager(@ApplicationContext context: Context): AlarmManager {
+        return context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    }
+
+    @Provides
+    @Singleton
+    fun provideMyAlarmManager(
+        @ApplicationContext context: Context,
+        alarmManager: AlarmManager,
+    ): MyAlarmManager {
+        return MyAlarmManager(context, alarmManager)
+    }
 }
+

@@ -11,5 +11,13 @@
     <string name="fore_update">You are on an older app version. You can use the app only if you update it.</string>
     <string name="action_skip">Skip</string>
     <string name="suggest_update">A new version is found on Play store, please update for better usage.</string>
-
+    <string name="continues_with_facebook">Continues with Facebook</string>
+    <string name="continues_with_google">Continues with Google</string>
+    <string name="continues_with_phone_number">Continues with Phone number</string>
+    <string name="app_widget_day_description">Rediscover from Google Photos</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="take_photo">Take photo</string>
+    <string name="add_from_library">Add from library</string>
 </resources>

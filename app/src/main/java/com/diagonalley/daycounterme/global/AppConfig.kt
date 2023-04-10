@@ -2,7 +2,6 @@ package com.diagonalley.daycounterme.global
 
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.res.ResourcesCompat
 import com.diagonalley.daycounterme.BuildConfig
 import com.diagonalley.daycounterme.global.Constant.CONFIG_IN_REVIEW
 import com.diagonalley.daycounterme.global.Constant.CONFIG_SHOW_AD
@@ -33,4 +32,5 @@ class AppConfig(private val sharedPreps: SharedPreps, resource: Resources) {
             sharedPreps.theme = value
             AppCompatDelegate.setDefaultNightMode(value)
         }
+
 }

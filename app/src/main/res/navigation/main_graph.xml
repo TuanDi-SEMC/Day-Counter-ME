@@ -2,10 +2,42 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_graph.xml"
-    app:startDestination="@id/signInFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/signInFragment"
-        android:name="com.diagonalley.daycounterme.ui.signin.SignInFragment"
-        android:label="SignInFragment" />
+        android:id="@+id/homeFragment"
+        android:name="com.diagonalley.daycounterme.ui.home.HomeFragment"
+        android:label="HomeFragment">
+        <action
+            android:id="@+id/action_homeFragment_to_myProfileFragment"
+            app:destination="@id/myProfileFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/stationary"
+            app:popEnterAnim="@anim/stationary"
+            app:popExitAnim="@anim/slide_down" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.diagonalley.daycounterme.ui.setting.SettingFragment"
+        android:label="SettingFragment" />
+    <fragment
+        android:id="@+id/myProfileFragment"
+        android:name="com.diagonalley.daycounterme.ui.profile.my.MyProfileFragment"
+        android:label="MyProfileFragment" />
+    <fragment
+        android:id="@+id/myWidgetFragment"
+        android:name="com.diagonalley.daycounterme.ui.mywidget.MyWidgetFragment"
+        android:label="MyWidgetFragment" />
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.diagonalley.daycounterme.ui.calendar.CalendarFragment"
+        android:label="CalendarFragment" />
+
+
 </navigation>

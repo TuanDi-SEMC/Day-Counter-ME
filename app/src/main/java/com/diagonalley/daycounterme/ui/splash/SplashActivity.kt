@@ -2,43 +2,27 @@ package com.diagonalley.daycounterme.ui.splash
 
 import android.Manifest
 import android.animation.Animator
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.AdaptiveIconDrawable
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.provider.Settings
-import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.graphics.drawable.toBitmap
 import com.afollestad.materialdialogs.MaterialDialog
-import com.diagonalley.daycounterme.MainActivity
 import com.diagonalley.daycounterme.R
 import com.diagonalley.daycounterme.base.BaseActivity
 import com.diagonalley.daycounterme.databinding.ActivitySplashBinding
-import com.diagonalley.daycounterme.ext.openAppSystemSettings
-import com.diagonalley.daycounterme.ext.openGoogleStore
 import com.diagonalley.daycounterme.global.ADMOD_TAG
 import com.diagonalley.daycounterme.global.AppConfig
 import com.diagonalley.daycounterme.global.SharedPreps
+import com.diagonalley.daycounterme.manager.MyAlarmManager
+import com.diagonalley.daycounterme.ui.main.MainActivity
+import com.diagonalley.daycounterme.utils.openAppSystemSettings
+import com.diagonalley.daycounterme.utils.openGoogleStore
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Timer
 import javax.inject.Inject
 
 
@@ -54,6 +38,9 @@ class SplashActivity : BaseActivity() {
 
     @Inject
     lateinit var appConfig: AppConfig
+
+    @Inject
+    lateinit var myAlarmManager: MyAlarmManager
     private val showAd by lazy { appConfig.isShowAd() }
 
     private val launcher: ActivityResultLauncher<String> =
@@ -78,6 +65,13 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //todo: Check reminder permission
+        if (myAlarmManager.canScheduleExactAlarms()) {
+            Timber.d("Reminder permission is granted!")
+        } else {
+            //Grant permission
+            myAlarmManager.gotoAlarmSetting()
+        }
         viewModel.event.observe(this) {
             when (it) {
                 SplashEvent.CHECKED_VERSION -> {
@@ -213,25 +207,7 @@ class SplashActivity : BaseActivity() {
             })
     }
 
-
-    @SuppressLint("NewApi")
     private fun gotoMainActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
-    }
-
-
-    private fun getBitmapFromDrawable(drawable: Drawable): Bitmap {
-        val bmp = Bitmap.createBitmap(
-            drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bmp)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bmp
-    }
-
-    private fun isSystemPackage(applicationInfo: ApplicationInfo): Boolean {
-        return applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0
+        MainActivity.clearAndStart(this)
     }
 }

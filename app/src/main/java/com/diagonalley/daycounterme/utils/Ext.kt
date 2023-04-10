@@ -1,27 +1,113 @@
-package com.diagonalley.daycounterme.ext
+package com.diagonalley.daycounterme.utils
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
+import android.os.SystemClock
 import android.provider.Settings
 import android.util.Base64
-import android.util.Base64.encodeToString
+import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.AppWidgetTarget
 import com.diagonalley.daycounterme.BuildConfig
 import com.diagonalley.daycounterme.R
+import com.diagonalley.daycounterme.ui.widget.ACTION_REFRESH
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
 import org.greenrobot.eventbus.EventBus
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+
+private var lastClickTime: Long = 0
+
+fun View.setSingleClick(function: (View) -> Unit) {
+    this.setOnClickListener {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
+            return@setOnClickListener
+        }
+        lastClickTime = SystemClock.elapsedRealtime()
+        function.invoke(this)
+    }
+}
+
+fun View.slideUp(
+) {
+    val animator: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(
+        this,
+        PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 250f, 0f),
+        PropertyValuesHolder.ofFloat(View.ALPHA, 0.2f, 1f)
+    )
+    animator.duration = 300
+    animator.interpolator = AccelerateInterpolator()
+    animator.addListener(object : Animator.AnimatorListener {
+        override fun onAnimationStart(animation: Animator) {
+            this@slideUp.alpha = 0f
+        }
+
+        override fun onAnimationEnd(animation: Animator) {
+
+        }
+
+        override fun onAnimationCancel(animation: Animator) {
+        }
+
+        override fun onAnimationRepeat(animation: Animator) {
+        }
+    })
+    animator.startDelay = (350).toLong()
+    animator.start()
+}
+
+fun Context.clearAndStartActivity(activity: Class<*>) {
+    val intent = Intent(this, activity).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+    startActivity(intent)
+}
+
+fun Context.updateWidget(widgetClass: Class<*>, appWidgetId: Int) {
+    val intent = Intent(this, widgetClass)
+    intent.action = ACTION_REFRESH
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+    sendBroadcast(intent)
+}
+
+fun Context.startActivityWithData(activity: Class<*>) {
+    val intent = Intent(this, activity).apply {
+
+    }
+    startActivity(intent)
+}
+
+fun ImageView.load(url: String) {
+    Glide.with(this).load(url).into(this)
+}
+
+fun AppWidgetTarget.getBitmap(context: Context, url: String) {
+    val options: RequestOptions =
+        RequestOptions().override(300, 300).placeholder(R.drawable.bg_app_widget)
+            .error(R.drawable.bg_app_widget)
+    Glide.with(context).asBitmap().load(url).apply(options).into(this)
+}
 
 
 /**
@@ -65,8 +151,7 @@ fun Any.unregisterEventBus() {
 }
 
 fun Context.sendMail(to: String, subject: String = "") {
-    val mailTo = "mailto:" + to +
-            "?&subject=" + Uri.encode(subject)
+    val mailTo = "mailto:" + to + "?&subject=" + Uri.encode(subject)
     val emailIntent = Intent(Intent.ACTION_VIEW)
     emailIntent.data = Uri.parse(mailTo)
     try {
@@ -145,13 +230,13 @@ fun Bitmap.encodeImage(): String? {
     val baos = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
     val b = baos.toByteArray()
-    return encodeToString(b, Base64.DEFAULT)
+    return Base64.encodeToString(b, Base64.DEFAULT)
 }
 
 fun Bitmap.convertToString(): String {
     val outputStream = ByteArrayOutputStream()
     this.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-    return encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+    return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
 }
 
 fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
@@ -162,3 +247,26 @@ fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observ
         }
     })
 }
+
+fun String.encodeAsBitmap(size: Int = 400): Bitmap {
+    val writer = QRCodeWriter()
+    val bitMatrix = writer.encode(this, BarcodeFormat.QR_CODE, size, size)
+    val width = bitMatrix.width
+    val height = bitMatrix.height
+    val pixels = IntArray(width * height)
+    for (y in 0 until height) {
+        for (x in 0 until width) {
+            pixels[y * width + x] = if (bitMatrix[x, y]) Color.BLACK else Color.WHITE
+        }
+    }
+
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+    return bitmap
+}
+
+fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte ->
+    "%02x".format(eachByte)
+}
+
+

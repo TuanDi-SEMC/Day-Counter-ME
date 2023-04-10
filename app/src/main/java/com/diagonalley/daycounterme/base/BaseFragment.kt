@@ -11,8 +11,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.diagonalley.daycounterme.R
-import com.diagonalley.daycounterme.ext.registerEventBus
-import com.diagonalley.daycounterme.ext.unregisterEventBus
+import com.diagonalley.daycounterme.utils.registerEventBus
+import com.diagonalley.daycounterme.utils.unregisterEventBus
 import com.google.android.material.transition.MaterialFadeThrough
 import timber.log.Timber
 
