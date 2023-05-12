@@ -9,9 +9,11 @@ import android.net.ConnectivityManager
 import com.diagonalley.daycounterme.global.AppConfig
 import com.diagonalley.daycounterme.global.Constant.SHARED_PREPS
 import com.diagonalley.daycounterme.global.SharedPreps
-import com.diagonalley.daycounterme.manager.AuthManager
 import com.diagonalley.daycounterme.manager.MyAlarmManager
 import com.diagonalley.daycounterme.manager.MyBiometricManager
+import com.diagonalley.daycounterme.manager.SessionManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,8 +58,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSharedPrefs(sharedPreferences: SharedPreferences): SharedPreps {
-        return SharedPreps(sharedPreferences)
+    fun provideSharedPrefs(sharedPreferences: SharedPreferences, gson: Gson): SharedPreps {
+        return SharedPreps(sharedPreferences, gson)
     }
 
     @Provides
@@ -68,8 +70,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthManager(sharedPreps: SharedPreps, appConfig: AppConfig): AuthManager {
-        return AuthManager(sharedPreps, appConfig)
+    fun provideAuthManager(sharedPreps: SharedPreps, appConfig: AppConfig): SessionManager {
+        return SessionManager(sharedPreps, appConfig)
     }
 
     @Provides
@@ -91,6 +93,17 @@ object AppModule {
         alarmManager: AlarmManager,
     ): MyAlarmManager {
         return MyAlarmManager(context, alarmManager)
+    }
+    @Provides
+    @Singleton
+    fun provideGson(): Gson {
+        return Gson()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
     }
 }
 

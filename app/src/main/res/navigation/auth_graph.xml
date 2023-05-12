@@ -15,10 +15,17 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_signInFragment_to_signInByPhoneFragment"
+            app:destination="@id/signInByPhoneFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupProfileFragment"
         android:name="com.diagonalley.daycounterme.ui.profile.setup.SetupProfileFragment"
         android:label="SetupProfileFragment" />
+    <fragment
+        android:id="@+id/signInByPhoneFragment"
+        android:name="com.diagonalley.daycounterme.ui.signin.phone.SignInByPhoneFragment"
+        android:label="SignInByPhoneFragment" />
 
 </navigation>

@@ -11,7 +11,7 @@ import com.diagonalley.daycounterme.databinding.FragmentSetupProfileBinding
 import com.diagonalley.daycounterme.global.AppConfig
 import com.diagonalley.daycounterme.ui.main.MainActivity
 import com.diagonalley.daycounterme.utils.clearAndStartActivity
-import com.diagonalley.daycounterme.utils.setSingleClick
+import com.diagonalley.daycounterme.utils.setOnSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

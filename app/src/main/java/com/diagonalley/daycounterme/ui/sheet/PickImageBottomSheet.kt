@@ -5,7 +5,7 @@ import android.view.View
 import com.diagonalley.daycounterme.R
 import com.diagonalley.daycounterme.base.BaseBottomSheet
 import com.diagonalley.daycounterme.databinding.PickImageBottomSheetBinding
-import com.diagonalley.daycounterme.utils.setSingleClick
+import com.diagonalley.daycounterme.utils.setOnSingleClickListener
 
 
 class PickImageBottomSheet private constructor() :
@@ -25,11 +25,11 @@ class PickImageBottomSheet private constructor() :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            btnTakePhoto.setSingleClick {
+            btnTakePhoto.setOnSingleClickListener {
                 dismiss()
                 listener?.takePhoto()
             }
-            btnGallery.setSingleClick {
+            btnGallery.setOnSingleClickListener {
                 dismiss()
                 listener?.openGallery()
             }

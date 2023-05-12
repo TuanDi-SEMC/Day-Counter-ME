@@ -24,7 +24,7 @@ import com.diagonalley.daycounterme.ui.sheet.PickImageBottomSheet
 import com.diagonalley.daycounterme.ui.widget.DayAppWidget
 import com.diagonalley.daycounterme.utils.encodeAsBitmap
 import com.diagonalley.daycounterme.utils.load
-import com.diagonalley.daycounterme.utils.setSingleClick
+import com.diagonalley.daycounterme.utils.setOnSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -54,8 +54,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         if (appWidgetManager?.isRequestPinAppWidgetSupported == true) {
             val pinnedWidgetCallbackIntent = Intent(requireContext(), MainActivity::class.java)
             val successCallback = PendingIntent.getBroadcast(
-                requireContext(), 0,
-                pinnedWidgetCallbackIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                requireContext(), 0, pinnedWidgetCallbackIntent, PendingIntent.FLAG_UPDATE_CURRENT
             )
             appWidgetManager.requestPinAppWidget(myProvider, null, successCallback)
         }
@@ -80,11 +79,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 layoutManager = gridLayoutManager
                 adapter = widgetAdapter
             }
-            imgAvatar.setSingleClick {
+            imgAvatar.setOnSingleClickListener {
                 val url = "https://i.stack.imgur.com/1nKV7.png?s=64&g=1"
                 val bitmap = url.encodeAsBitmap()
             }
-            btnAdd.setSingleClick {
+            btnAdd.setOnSingleClickListener {
                 findNavController().navigate(R.id.calendarFragment)
             }
         }

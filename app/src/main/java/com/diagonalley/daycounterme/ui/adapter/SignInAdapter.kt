@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.diagonalley.daycounterme.databinding.ItemSignInBinding
-import com.diagonalley.daycounterme.utils.setSingleClick
+import com.diagonalley.daycounterme.utils.setOnSingleClickListener
 
 enum class SignIn {
     FACEBOOK, GOOGLE, PHONE_NUMBER
@@ -31,7 +31,7 @@ class SignInAdapter constructor(
 
         fun bind(item: SignInView) {
             binding.apply {
-                root.setSingleClick {
+                root.setOnSingleClickListener {
                     onClick(item)
                 }
                 imgIcon.setImageResource(item.drawableRes)

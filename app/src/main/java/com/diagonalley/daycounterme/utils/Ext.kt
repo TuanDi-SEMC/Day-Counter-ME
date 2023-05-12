@@ -7,8 +7,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Color
+import android.graphics.*
 import android.net.Uri
 import android.os.Environment
 import android.os.SystemClock
@@ -23,6 +22,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.AppWidgetTarget
@@ -30,24 +31,13 @@ import com.diagonalley.daycounterme.BuildConfig
 import com.diagonalley.daycounterme.R
 import com.diagonalley.daycounterme.ui.widget.ACTION_REFRESH
 import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import org.greenrobot.eventbus.EventBus
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-
-private var lastClickTime: Long = 0
-
-fun View.setSingleClick(function: (View) -> Unit) {
-    this.setOnClickListener {
-        if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
-            return@setOnClickListener
-        }
-        lastClickTime = SystemClock.elapsedRealtime()
-        function.invoke(this)
-    }
-}
 
 fun View.slideUp(
 ) {
@@ -269,4 +259,72 @@ fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte ->
     "%02x".format(eachByte)
 }
 
+fun RecyclerView.smoothToPosition(adapter: ListAdapter<*, *>) {
+    if (adapter.currentList.size > 0) this.smoothScrollToPosition(0)
+}
+
+private const val DEFAULT_CLICK_INTERVAL = 500L // in milliseconds
+
+private var lastClickTime: Long = 0
+
+fun View.setOnSingleClickListener(
+    clickInterval: Long = DEFAULT_CLICK_INTERVAL,
+    onClick: (View) -> Unit,
+) {
+    setOnClickListener { view ->
+        val currentTime = SystemClock.elapsedRealtime()
+        if (currentTime - lastClickTime > clickInterval) {
+            lastClickTime = currentTime
+            onClick(view)
+        }
+    }
+}
+
+
+/**
+ * Generates a QR code with an optional logo or icon in the center.
+ *
+ * @param text The text to encode in the QR code.
+ * @param logo The logo to add to the center of the QR code, or null to generate a QR code without a logo.
+ * @param width The desired width of the QR code bitmap in pixels.
+ * @param height The desired height of the QR code bitmap in pixels.
+ * @return A Bitmap object containing the generated QR code, or null if there was an error.
+ */
+fun generateQRCodeWithLogo(text: String, logo: Bitmap?, width: Int, height: Int): Bitmap? {
+    val hints = Hashtable<EncodeHintType, String>()
+    hints[EncodeHintType.CHARACTER_SET] = "UTF-8"
+    try {
+        val bitMatrix = QRCodeWriter().encode("", BarcodeFormat.QR_CODE, width, height, hints)
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+        paint.isAntiAlias = true
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                if (bitMatrix[x, y]) {
+                    paint.color = 0xFF000000.toInt()
+                } else {
+                    paint.color = 0xFFFFFFFF.toInt()
+                }
+                canvas.drawRect(
+                    x.toFloat(), y.toFloat(), (x + 1).toFloat(), (y + 1).toFloat(), paint
+                )
+            }
+        }
+        if (logo != null) {
+            val logoSize = width.coerceAtMost(height) / 5
+            val logoRect = RectF(
+                (width - logoSize) / 2f,
+                (height - logoSize) / 2f,
+                (width + logoSize) / 2f,
+                (height + logoSize) / 2f
+            )
+            canvas.drawBitmap(logo, null, logoRect, null)
+        }
+        return bitmap
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
+}
 

@@ -125,6 +125,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-config-ktx'
     implementation "com.google.firebase:firebase-firestore-ktx"
+    implementation "com.google.firebase:firebase-auth"
 
     // material dialogs
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
@@ -147,6 +148,11 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.2'
     //Calendar view
     implementation 'com.kizitonwose.calendar:view:2.2.0'
+
+    //Authentication
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4'
+
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

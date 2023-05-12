@@ -10,7 +10,7 @@ import com.diagonalley.daycounterme.databinding.ItemBirthdayBinding
 import com.diagonalley.daycounterme.databinding.ItemWeddingWidgetPreviewBinding
 import com.diagonalley.daycounterme.global.WEDDING
 import com.diagonalley.daycounterme.utils.load
-import com.diagonalley.daycounterme.utils.setSingleClick
+import com.diagonalley.daycounterme.utils.setOnSingleClickListener
 
 data class WidgetView(
     val widgetType: Int, val url: String, val title: String? = null, val subTitle: String? = null,
@@ -26,7 +26,7 @@ class WidgetAdapter constructor(
 
         fun bind(item: WidgetView) {
             binding.apply {
-                root.setSingleClick {
+                root.setOnSingleClickListener {
                     onClick(item)
                 }
 //                imgBackground.load(item.url)
@@ -39,7 +39,7 @@ class WidgetAdapter constructor(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: WidgetView) {
             binding.apply {
-                root.setSingleClick {
+                root.setOnSingleClickListener {
                     onClick.invoke(item)
                 }
                 imgAvatar.load(item.url)

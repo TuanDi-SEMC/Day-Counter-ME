@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.materialdialogs.MaterialDialog
 import com.diagonalley.daycounterme.R
 import com.diagonalley.daycounterme.base.BaseActivity
@@ -15,6 +16,8 @@ import com.diagonalley.daycounterme.global.ADMOD_TAG
 import com.diagonalley.daycounterme.global.AppConfig
 import com.diagonalley.daycounterme.global.SharedPreps
 import com.diagonalley.daycounterme.manager.MyAlarmManager
+import com.diagonalley.daycounterme.repository.impl.SignInCallback
+import com.diagonalley.daycounterme.ui.auth.AuthActivity
 import com.diagonalley.daycounterme.ui.main.MainActivity
 import com.diagonalley.daycounterme.utils.openAppSystemSettings
 import com.diagonalley.daycounterme.utils.openGoogleStore
@@ -65,6 +68,7 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         //todo: Check reminder permission
         if (myAlarmManager.canScheduleExactAlarms()) {
             Timber.d("Reminder permission is granted!")
@@ -81,7 +85,7 @@ class SplashActivity : BaseActivity() {
                     createAdRequest()
                 }
                 SplashEvent.SHOW_AD_FAILED, SplashEvent.LOAD_AD_FAILED, SplashEvent.DISMISS_AD -> {
-                    gotoMainActivity()
+                    checkAuthentication()
                 }
                 SplashEvent.LOAD_AD_SUCCESS -> {
                     showAd()
@@ -127,6 +131,7 @@ class SplashActivity : BaseActivity() {
 
     private fun onUpdateNeeded(isMandatoryUpdate: Boolean) {
         MaterialDialog(this).show {
+            cancelable(false)
             title(R.string.app_update_available)
             positiveButton(R.string.update_now) {
                 openGoogleStore()
@@ -149,7 +154,7 @@ class SplashActivity : BaseActivity() {
                 viewModel.setEvent(SplashEvent.AD_INITIALIZED)
             }
         } else {
-            gotoMainActivity()
+            checkAuthentication()
         }
     }
 
@@ -207,7 +212,15 @@ class SplashActivity : BaseActivity() {
             })
     }
 
-    private fun gotoMainActivity() {
-        MainActivity.clearAndStart(this)
+    private fun checkAuthentication() {
+        viewModel.isSignedIn(signInCallback = object : SignInCallback {
+            override fun onSignInSuccess() {
+                MainActivity.clearAndStart(this@SplashActivity)
+            }
+
+            override fun onSignInFailure(errorMsg: String?) {
+                AuthActivity.clearAndStart(this@SplashActivity)
+            }
+        })
     }
 }

@@ -16,7 +16,8 @@ import com.diagonalley.daycounterme.databinding.CalendarDayLayoutBinding
 import com.diagonalley.daycounterme.databinding.FragmentCalendarBinding
 import com.diagonalley.daycounterme.databinding.ItemHorizontalEventBinding
 import com.diagonalley.daycounterme.global.AppConfig
-import com.diagonalley.daycounterme.utils.setSingleClick
+import com.diagonalley.daycounterme.utils.setOnSingleClickListener
+import com.diagonalley.daycounterme.utils.smoothToPosition
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
@@ -90,6 +91,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>() {
                 override fun create(view: View) = DayViewContainer(view) { selectedDate ->
                     viewModel.selectDate(selectedDate)
                     calendarView.notifyDateChanged(selectedDate)
+                    rcvEvent.smoothToPosition(mAdapter)
                 }
 
                 // Called every time we need to reuse a container.
@@ -99,7 +101,11 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>() {
                     textView.text = data.date.dayOfMonth.toString()
                     if (data.position == DayPosition.MonthDate) {
                         if (currentDate > data.date) {
-                            textView.setTextColor(resources.getColor(R.color.disableTextColor, null))
+                            textView.setTextColor(
+                                resources.getColor(
+                                    R.color.disableTextColor, null
+                                )
+                            )
                             textView.setBackgroundResource(R.drawable.bg_date_view)
                         } else {
                             // Show the month dates. Remember that views are reused!
@@ -109,7 +115,11 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>() {
                                 textView.setBackgroundResource(R.drawable.bg_selected_date_view)
                             } else {
                                 // If this is NOT the selected date, remove the background and reset the text color.
-                                textView.setTextColor(resources.getColor(R.color.primaryTextColor, null))
+                                textView.setTextColor(
+                                    resources.getColor(
+                                        R.color.primaryTextColor, null
+                                    )
+                                )
                                 textView.setBackgroundResource(R.drawable.bg_disable_date_view)
                             }
                         }
@@ -120,7 +130,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>() {
                     }
                 }
             }
-            imgToggle.setSingleClick {
+            imgToggle.setOnSingleClickListener {
                 appbar.setExpanded(true, true)
             }
             val daysOfWeek = daysOfWeek(firstDayOfWeek = DayOfWeek.MONDAY)
@@ -189,7 +199,7 @@ class HorizontalEventAdapter constructor(
         fun bind(item: HorizontalEvent) {
             binding.apply {
                 tvTitle.text = item.eventName
-                root.setSingleClick {
+                root.setOnSingleClickListener {
                     onClick(item)
                 }
                 executePendingBindings()

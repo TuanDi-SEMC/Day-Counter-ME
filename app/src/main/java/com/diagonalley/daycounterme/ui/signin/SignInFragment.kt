@@ -1,7 +1,11 @@
 package com.diagonalley.daycounterme.ui.signin
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diagonalley.daycounterme.R
@@ -13,8 +17,12 @@ import com.diagonalley.daycounterme.ui.adapter.SignInAdapter
 import com.diagonalley.daycounterme.ui.main.MainActivity
 import com.diagonalley.daycounterme.utils.clearAndStartActivity
 import com.diagonalley.daycounterme.utils.slideUp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class SignInFragment : BaseFragment<FragmentSignInBinding>() {
@@ -26,6 +34,15 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
             signIn(it.signIn)
         }
     }
+    private val signInGoogleLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val data = it.data
+            if (it.resultCode == Activity.RESULT_OK && data != null) {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(data)
+                viewModel.handleGoogleSignInResult(task)
+            }
+        }
 
     override fun getLayoutResId(): Int = R.layout.fragment_sign_in
 
@@ -49,6 +66,9 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
                     SplashEvent.LOAD_AD_SUCCESS -> {}
                     SplashEvent.SHOW_AD_FAILED -> {}
                     SplashEvent.DISMISS_AD -> {}
+                    SplashEvent.SIGN_IN_SUCCESS -> {
+                        MainActivity.clearAndStart(requireContext())
+                    }
                 }
             }
         }
@@ -60,9 +80,11 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
                 requireContext().clearAndStartActivity(MainActivity::class.java)
             }
             SignIn.GOOGLE -> {
-                findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToSetupProfileFragment())
+                signInGoogleLauncher.launch(viewModel.getSignInGoogleIntent())
             }
-            SignIn.PHONE_NUMBER -> {}
+            SignIn.PHONE_NUMBER -> {
+                findNavController().navigate(R.id.signInByPhoneFragment)
+            }
         }
     }
 }

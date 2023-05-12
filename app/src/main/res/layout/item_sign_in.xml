@@ -29,9 +29,10 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="56dp"
             android:layout_weight="1"
+            android:fontFamily="@font/regular"
             android:gravity="center"
-            tools:text="@string/continues_with_facebook"
             android:textColor="#000F24"
-            android:textSize="@dimen/_12ssp" />
+            android:textSize="@dimen/_12ssp"
+            tools:text="@string/continues_with_facebook" />
     </LinearLayout>
 </layout>
